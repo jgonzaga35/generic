@@ -147,7 +147,7 @@ Write some tests that test the various cases here, there are some simple tests t
 
 #### Task 3 - Parallelism
 
-Currently our reduce function just operates on one item at a time, we want to be fancier here and operate on multiple at the same time!  Parallelism/Threading can help us here.  `parallelReduce` will operate on the stream from multiple threads at the same time!  However, iterators aren't thread-safe and require synchronisation to ensure you don't cause data races and other sorts of threading issues.
+Currently our reduce function just operates on one item at a time, we want to be fancier here and operate on multiple at the same time!  Parallelism/Threading can help us here.  `parallelReduce` will operate on the stream from multiple threads at the same time!  However, iterators aren't thread-safe and require synchronisation to ensure you don't cause data races and other sorts of threading issues.  Effectively, every thread will be using the same iterator allowing it to iterate through multiple items at the same time.
 
 `parallelReduce` is already written for you and you don't have to modify it.  The problem however, is that your reduce function most likely is not thread-safe, so you need to figure out a way to synchronise it.
 
@@ -172,6 +172,8 @@ Could you write a test case to demonstrate the issues at play here?  Try creatin
 Finally, fix your code in reduce to handle this parallelism.
 
 > Very little code has to be written here, don't overcomplicate it.
+
+Finally, is this actually faster?  Try running it on 1000 items and [using a timer](https://docs.oracle.com/javase/7/docs/api/java/util/Timer.html).  Write your conclusions in `answers.md`
 
 ## Submission
 

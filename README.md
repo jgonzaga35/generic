@@ -24,7 +24,7 @@ This lab attempts to bring you through the thought process behind query styled l
 
 The attempt is for this lab to be more educational than _hard_, so don't overcomplicate each of the sections.
 
-### OQL - Object Query Language
+### Query Languages
 
 You've already dealt with a query language in this course. Streams!  An example is below that does the following;
 
@@ -131,15 +131,15 @@ public class Table {
 }
 ```
 
-This should be `Table<E>` after making it generic.  This will require the conversion of the `TableView` and `SimpleTableView` classes as well.  This should be mostly just changing generic arguments to Iterators/ArrayLists.
+This should be `Table<E>` (make sure to name the generic argument `E`) after making it generic.  This will require the conversion of the `TableView` and `SimpleTableView` classes as well.  This should be mostly just changing generic arguments to Iterators/ArrayLists.
 
 What sort of design pattern does `SimpleTableView` follow?
 
 > After doing this comment the first test in `Tests.java` and uncomment the rest.
 
-#### Task 2 - Count & Reduce
+#### Task 2 - Count & Reduce & Select
 
-Your next task is to implement the `count` and `reduce` functions in `SimpleTableView`.  An explanation of the functions is listed in the interface with an example.  Make sure to update the interface and implementation with a generic instead of using `User`.
+Your next task is to implement the `count`, `select`, and `reduce` functions in `SimpleTableView`.  An explanation of the functions is listed in the interface with an example.  Make sure to update the interface and implementation with a generic instead of using `User`.
 
 This is a relatively simple exercise, just make sure you don't just call the Java Streams functions.
 
@@ -149,9 +149,9 @@ Write some tests that test the various cases here, there are some simple tests t
 
 Currently our reduce function just operates on one item at a time, we want to be fancier here and operate on multiple at the same time!  Parallelism/Threading can help us here.  `parallelReduce` will operate on the stream from multiple threads at the same time!  However, iterators aren't thread-safe and require synchronisation to ensure you don't cause data races and other sorts of threading issues.
 
-There is some basic code in `parallelReduce` to get you started, so you won't have to create multiple threads yourself, however you will have to figure out how to synchronise access to the iterator.
+`parallelReduce` is already written for you and you don't have to modify it.  The problem however, is that your reduce function most likely is not thread-safe, so you need to figure out a way to synchronise it.
 
-The key points here are;
+The key points to think about here are;
 - How are you going to guarantee no item gets processed twice (or more)
 - How are you going to guarantee no item gets skipped
 - Think about the following case in particular... (this is called a 'race')
@@ -165,7 +165,13 @@ if (iterator.hasNext()) {
 }
 ```
 
-Write your reasonings to how your code protects against these 3 cases in `answers.md`
+Write your reasonings to how your code protects against these 3 cases in `answers.md`.
+
+Could you write a test case to demonstrate the issues at play here?  Try creating a test case with a lot of data to demonstrate the issue (no tests cases are provided for this task).  Document in answers.md why you think your test case shows off the issue.
+
+Finally, fix your code in reduce to handle this parallelism.
+
+> Very little code has to be written here, don't overcomplicate it.
 
 ## Submission
 

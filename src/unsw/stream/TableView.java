@@ -1,7 +1,10 @@
 package unsw.stream;
 
 import java.util.Iterator;
+import java.util.concurrent.ExecutionException;
 import java.util.function.BiFunction;
+import java.util.function.BinaryOperator;
+import java.util.function.Function;
 
 public interface TableView extends Iterator<User>, Iterable<User>
 {
@@ -23,10 +26,19 @@ public interface TableView extends Iterator<User>, Iterable<User>
     public int count();
 
     /**
+     * Map a table view to another table view.
+     * 
+     * Each item/record is mapped through the provided selector.
+     * 
+     * An example would be `select((fruit) -> fruit.age())`
+     */
+    public<R> TableView select(Function<User, R> selector);
+
+    /**
      * Reduce the view into a value.
      * 
      * For example the `sum` method for Fruit ages would look like;
-     * `reduce((acc, fruit) -> acc + fruit.age(), 0)`
+     * `select(Fruit::age).reduce((acc, age) -> acc + age, 0)`
      * 
      * reducer:
      *  - First argument is the current accumulated value
@@ -36,9 +48,15 @@ public interface TableView extends Iterator<User>, Iterable<User>
      * For example applying sum over ages (1, 2, 3, 4) is equal to
      * ((((0 + 1) + 2) + 3) + 4)
      */
-    public<R> R reduce(BiFunction<R, User, R> reducer, R initial);
+    public <R> R reduce(BiFunction<R, User, R> reducer, R initial);
+    // NOTE: LR extends User should become
 
-    public<R> R parallelReduce(BiFunction<R, User, R> reducer, R initial, int numberOfThreads);
+    /**
+     * Apply reduce over multiple threads at once.  This function has been written for you
+     * but since your reduce isn't likely threadsafe you'll want to modify your reduce to make
+     * it work with parallel reduce.
+     */
+    public <R> R parallelReduce(BiFunction<R, User, R> reducer, BinaryOperator<R> combiner, R initial, int numberOfThreads) throws InterruptedException, ExecutionException;
 
     /**
      * Convert the remaining records into a table.

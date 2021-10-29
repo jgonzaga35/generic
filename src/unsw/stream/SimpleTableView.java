@@ -5,7 +5,15 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.Future;
 import java.util.function.BiFunction;
+import java.util.function.BinaryOperator;
+import java.util.function.Function;
 
 public class SimpleTableView implements TableView {
     private Iterator<User> it;
@@ -84,14 +92,38 @@ public class SimpleTableView implements TableView {
     }
 
     @Override
+    public<R> TableView select(Function<User, R> selector) {
+        // TODO: Task 2
+        return null;
+    }
+
+    @Override
     public <R> R reduce(BiFunction<R, User, R> reducer, R initial) {
         // TODO: Task 2
         return null;
     }
 
     @Override
-    public <R> R parallelReduce(BiFunction<R, User, R> reducer, R initial, int numberOfThreads) {
-        // TODO: Task 3
-        return null;
+    public <R> R parallelReduce(BiFunction<R, User, R> reducer, BinaryOperator<R> combiner, R initial, int numberOfThreads) throws InterruptedException, ExecutionException {
+        // you don't have to change this function at all.
+
+        // create a pool of threads to pick jobs.
+        ForkJoinPool pool = new ForkJoinPool(numberOfThreads);
+        Callable<R> reductionOperation = () -> reduce((acc, cur) -> reducer.apply(acc, cur), initial);
+
+        // fully exhaust pool
+        List<Callable<R>> callables = new ArrayList<>();
+        for (int i = 0; i < numberOfThreads; i++) callables.add(reductionOperation);
+
+        // execute all the operations, this is the concurrency part (this single function call)
+        List<Future<R>> results = pool.invokeAll(callables);
+        
+        // at this point we are single threaded and can just accumulate the left over values
+        R accValue = initial;
+        for (Future<R> result : results) {
+            accValue = combiner.apply(accValue, result.get());
+        }
+
+        return accValue;
     }
 }

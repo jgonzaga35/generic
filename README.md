@@ -180,7 +180,7 @@ Finally, is this actually faster?  Try running it on 1000 items and [using a tim
 To submit, make a tag to show that your code at the current commit is ready for your submission using the command:
 
 ```bash
-$ git tag -fa submission -m "Submission for Lab-05"
+$ git tag -fa submission -m "Submission for Lab-08"
 $ git push -f origin submission
 ```
 

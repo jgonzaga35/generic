@@ -6,9 +6,10 @@
 
 ## Aims
 
-- Understand and apply the Decorator/Singleton Patterns
+- Understand and apply the Decorator Patterns
 - Learn about a complex problem by breaking it down into steps
 - Utilise generic programming to generalise data structures
+- Write thread safe code by understanding a simple concurrency exmaple
 
 ## Setup
 

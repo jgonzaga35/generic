@@ -134,6 +134,13 @@ public class Table {
 
 This should be `Table<E>` (make sure to name the generic argument `E`) after making it generic.  This will require the conversion of the `TableView` and `SimpleTableView` classes as well.  This should be mostly just changing generic arguments to Iterators/ArrayLists.
 
+Just to ensure this is very clear here are some example signatures that you should end up with, for some of the more complicated functions in `TableView`;
+
+```java
+public<R> TableView<R> select(Function<E, R> selector);
+public <R> R reduce(BiFunction<R, E, R> reducer, R initial);
+```
+
 What sort of design pattern does `SimpleTableView` follow?
 
 > After doing this comment the first test in `Tests.java` and uncomment the rest.
@@ -142,7 +149,7 @@ What sort of design pattern does `SimpleTableView` follow?
 
 Your next task is to implement the `count`, `select`, and `reduce` functions in `SimpleTableView`.  An explanation of the functions is listed in the interface with an example.  Make sure to update the interface and implementation with a generic instead of using `User`.
 
-This is a relatively simple exercise, just make sure you don't just call the Java Streams functions.
+This is a relatively simple exercise, just make sure you don't just call the Java Streams functions.  Look at the given take/skip functions for two approaches, try to pick an approach that means you do the least amount of work possible, for example if you do `select(x -> x.y).take(10)` it should only process the selection function 10 times.
 
 Write some tests that test the various cases here, there are some simple tests to help you get started.  Just one or two extra should be fine.
 
@@ -170,9 +177,9 @@ Write your reasonings to how your code protects against these 3 cases in `answer
 
 Could you write a test case to demonstrate the issues at play here?  Try creating a test case with a lot of data to demonstrate the issue (no tests cases are provided for this task).  Document in answers.md why you think your test case shows off the issue.
 
-Finally, fix your code in reduce to handle this parallelism.
-
-> Very little code has to be written here, don't overcomplicate it.
+Finally, fix your code in reduce to handle this parallelism;
+- Think about reducing the critical section, do as little work as you can in a lock
+- Does your lock actually encourage parallelism?
 
 Finally, is this actually faster?  Try running it on 1000 items and [using a timer](https://docs.oracle.com/javase/7/docs/api/java/util/Timer.html).  Write your conclusions in `answers.md`
 

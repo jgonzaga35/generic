@@ -14,7 +14,7 @@ import unsw.stream.Table;
 import unsw.stream.User;
 
 public class Tests {
-    // After doing Task 1 comment this out.
+    // After doing Task 1 update this test.
     @Test
     public void SimpleTest() {
         List<User> users = new ArrayList<User>();
@@ -84,6 +84,23 @@ public class Tests {
         assertEquals(false, table.toView().select(x -> x.isActive()).reduce(Boolean::logicalAnd, true));
         assertEquals(true, table.toView().select(x -> x.isActive()).reduce(Boolean::logicalOr, true));
         assertEquals("Devs, Devs, Testers, Business Analysts, CEO", table.toView().select(x -> x.jobTitle()).reduce((acc, cur) -> acc.isEmpty() ? cur : acc + ", " + cur, ""));
+    }
+
+    @Test
+    public void Task3_ParallelReduce() {
+        List<User> users = new ArrayList<User>();
+        users.add(new User(true, "A", "Devs"));
+        users.add(new User(true, "B", "Devs"));
+        users.add(new User(false, "C", "Testers"));
+        users.add(new User(true, "D", "Business Analysts"));
+        users.add(new User(true, "E", "CEO"));
+
+        Table<User> table = new Table<User>(users);
+        
+        assertEquals(false, table.toView().select(x -> x.isActive()).reduce(Boolean::logicalAnd, true));
+        assertEquals(true, table.toView().select(x -> x.isActive()).reduce(Boolean::logicalOr, true));
+        assertEquals(false, table.toView().select(x -> x.isActive()).parallelReduce(Boolean::logicalAnd, Boolean::logicalAnd, true, 16));
+        assertEquals(true, table.toView().select(x -> x.isActive()).parallelReduce(Boolean::logicalOr, Boolean::logicalOr, true, 16));
     }
     */
 }

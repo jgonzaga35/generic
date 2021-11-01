@@ -176,6 +176,10 @@ Finally, fix your code in reduce to handle this parallelism.
 
 Finally, is this actually faster?  Try running it on 1000 items and [using a timer](https://docs.oracle.com/javase/7/docs/api/java/util/Timer.html).  Write your conclusions in `answers.md`
 
+## Lab 08 - Bonus Exercise - Tribute 🎸
+
+Consider the song [Tribute](https://www.youtube.com/watch?v=_lK4cX5xGiQ). What Object Oriented Design Principle does the song embody? Write it down inside `tribute.md`.
+
 ## Submission
 
 To submit, make a tag to show that your code at the current commit is ready for your submission using the command:
